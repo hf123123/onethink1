@@ -14,6 +14,10 @@ class BrandController extends \yii\web\Controller
         return $this->render('add',['model'=>$model]);
     }
 
+    //修改品牌
+    public function actionEdit($id){
+        //
+    }
 
     public function actionIndex()
     {
