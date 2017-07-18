@@ -29,14 +29,24 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => '商城后台管理',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        //['label' => 'Home', 'url' => ['/site/index']],
+        ['label'=>'品牌管理','items'=>[
+                ['label'=>'添加品牌','url'=>['brand/add']],
+                ['label'=>'品牌列表','url'=>['brand/index']]
+        ]],
+        ['label'=>'文章管理','items'=>[
+            ['label'=>'添加文章','url'=>['article/add']],
+            ['label'=>'文章列表','url'=>['article/index']],
+            ['label'=>'添加分类','url'=>['article-category/add']],
+            ['label'=>'分类列表','url'=>['article-category/index']],
+        ]]
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
