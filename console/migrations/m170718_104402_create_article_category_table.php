@@ -23,6 +23,7 @@ class m170718_104402_create_article_category_table extends Migration
 //status	int(2)	状态(-1删除 0隐藏 1正常)
             'status'=>$this->smallInteger(2)->comment('状态'),
         ]);
+
     }
 
     /**

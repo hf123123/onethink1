@@ -14,6 +14,7 @@ class ArticleCategoryController extends \yii\web\Controller
         $model = new ArticleCategory();
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $model->save();
+            //$model->id;
             \Yii::$app->session->setFlash('success','文章分类添加成功');
             return $this->redirect(['article-category/index']);
         }
@@ -29,6 +30,7 @@ class ArticleCategoryController extends \yii\web\Controller
         }
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $model->save();
+
             \Yii::$app->session->setFlash('success','文章分类添加成功');
             return $this->redirect(['article-category/index']);
         }

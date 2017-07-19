@@ -13,7 +13,7 @@
     <tr>
         <td><?=$model->id?></td>
         <td><?=$model->name?></td>
-        <td><?=$model->logo?></td>
+        <td><?=\yii\bootstrap\Html::img($model->logo,['height'=>50])?></td>
         <td><?=\yii\bootstrap\Html::a('修改',['brand/edit','id'=>$model->id])?>
             <?=\yii\bootstrap\Html::a('删除',['brand/del','id'=>$model->id])?></td>
     </tr>
