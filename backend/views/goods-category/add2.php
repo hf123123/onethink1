@@ -24,8 +24,8 @@ $this->registerJsFile('@web/zTree/js/jquery.ztree.core.js',['depends'=>\yii\web\
 //            {id:11, pId:1, name: "子节点1"},
 //            {id:12, pId:1, name: "子节点2"}
 //        ];';
-$categories[] = ['id'=>0,'parent_id'=>0,'name'=>'顶级分类','open'=>1];
-$nodes = \yii\helpers\Json::encode($categories);
+
+$nodes = \yii\helpers\Json::encode(\backend\models\GoodsCategory::getZtreeNodes());
 $nodeId = $model->parent_id;
 $this->registerJs(new \yii\web\JsExpression(
 <<<JS
