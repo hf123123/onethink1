@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\ArticleDetail;
+use backend\models\ArticleSearchForm;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
@@ -15,13 +16,27 @@ class ArticleController extends \yii\web\Controller
      */
     public function actionIndex()
     {
+        $model = new ArticleSearchForm();
+        //$keywords = \Yii::$app->request->get('keywords');
+        //搜索sql   where name like %四川%
         $query = Article::find();
+        $model->load(\Yii::$app->request->get());
+        if($model->name){
+            $query->andWhere(['like','name',$model->name]);
+        }
+        if($model->intro){
+            $query->andWhere(['like','intro',$model->intro]);
+        }
+        /*if($keywords){
+            $query->where(['like','name',$keywords]);
+        }*/
+
         $pager = new Pagination([
             'totalCount'=>$query->count(),
             'pageSize'=>2
         ]);
         $articles = $query->limit($pager->limit)->offset($pager->offset)->all();
-        return $this->render('index',['articles'=>$articles,'pager'=>$pager]);
+        return $this->render('index',['articles'=>$articles,'pager'=>$pager,'model'=>$model]);
     }
     /*
      * 添加文章

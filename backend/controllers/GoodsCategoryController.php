@@ -82,6 +82,7 @@ class GoodsCategoryController extends \yii\web\Controller
                 if($model->parent_id){
                     //非一级分类
 
+
                     $category = GoodsCategory::findOne(['id'=>$model->parent_id]);
                     if($category){
                         $model->appendTo($category);
