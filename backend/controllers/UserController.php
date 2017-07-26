@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\PasswordForm;
 use backend\models\User;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
@@ -92,6 +93,14 @@ class UserController extends \yii\web\Controller
         //表单字段  旧密码 新密码 确认新密码
         //验证规则  都不能为空  验证旧密码是否正确  新密码不能和旧密码一样  确认新密码和新密码一样
         //表单验证通过 更新新密码
+        $model = new PasswordForm();
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //验证通过，更新新密码
+            \Yii::$app->session->setFlash('success','密码修改成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('password',['model'=>$model]);
     }
 
 
