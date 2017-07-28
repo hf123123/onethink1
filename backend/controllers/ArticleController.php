@@ -6,6 +6,7 @@ use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\ArticleDetail;
 use backend\models\ArticleSearchForm;
+
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
@@ -109,4 +110,5 @@ class ArticleController extends \yii\web\Controller
             ]
         ];
     }
+
 }

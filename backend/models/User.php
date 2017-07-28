@@ -25,6 +25,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;//明文密码
     public $rememberMe;
+    public $roles=[];
 
     public static $status_options=[
         10=>'启用',0=>'禁用'
@@ -71,6 +72,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             //验证邮箱格式
             ['email','email','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
             ['rememberMe','boolean','on'=>self::SCENARIO_LOGIN],
+            ['roles','safe'],
         ];
     }
 
@@ -147,6 +149,41 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return false;
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        $authManager = Yii::$app->authManager;
+        $authManager->revokeAll($this->id);
+        if(is_array($this->roles)){
+            foreach ($this->roles as $roleName){
+                $role = $authManager->getRole($roleName);
+                if($role) $authManager->assign($role,$this->id);
+            }
+        }
+    }
+
+
+    //获取当前用户的菜单
+    public function getMenus()
+    {
+        $menuItems = [];
+        $menus = Menu::findAll(['parent_id'=>0]);
+        foreach ($menus as $menu){
+            $item = ['label'=>$menu->label,'items'=>[]];
+            foreach ($menu->children as $child){
+                //根据用户权限判断，该菜单是否显示
+                if(Yii::$app->user->can($child->url)){
+                    $item['items'][] = ['label'=>$child->label,'url'=>[$child->url]];
+                }
+            }
+            //如果该一级菜单没有子菜单，就不显示
+            if(!empty($item['items'])){
+                $menuItems[] = $item;
+            }
+
+        }
+        return $menuItems;
+    }
     /**
      * Finds an identity by the given ID.
      * @param string|int $id the ID to be looked for

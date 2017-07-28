@@ -35,26 +35,26 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        //['label' => 'Home', 'url' => ['/site/index']],
-        ['label'=>'品牌管理','items'=>[
-                ['label'=>'添加品牌','url'=>['brand/add']],
-                ['label'=>'品牌列表','url'=>['brand/index']]
-        ]],
-        ['label'=>'文章管理','items'=>[
-            ['label'=>'添加文章','url'=>['article/add']],
-            ['label'=>'文章列表','url'=>['article/index']],
-            ['label'=>'添加分类','url'=>['article-category/add']],
-            ['label'=>'分类列表','url'=>['article-category/index']],
-        ]]
-    ];
+   /* $menuItems=[
+            ['label' => '登录', 'url' => ['user/login']],//可跳转的一级菜单
+            ['label' => '用户管理', 'items' => [
+                ['label' => '添加用户', 'url' => ['user/add']],//添加用户
+                ['label' => '用户列表', 'url' => ['user/index']],//用户列表
+            ]],//不可跳转，带下来列表的一级菜单
+            ['label' => '文章管理', 'items' => [
+                ['label' => '添加文章', 'url' => ['user/add']],//添加用户
+                ['label' => '文章列表', 'url' => ['user/index']],//用户列表
+            ]],//不可跳转，带下来列表的一级菜单
+    ];*/
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems = [];
+        $menuItems[] = ['label' => '登录', 'url' => ['user/login']];
     } else {
+        $menuItems = Yii::$app->user->identity->getMenus();
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
+            . Html::beginForm(['user/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '注销 (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

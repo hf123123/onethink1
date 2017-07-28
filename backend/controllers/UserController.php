@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\PasswordForm;
 use backend\models\User;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 class UserController extends \yii\web\Controller
@@ -18,6 +19,14 @@ class UserController extends \yii\web\Controller
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
 
             $model->save();
+            /*$authManager = Yii::$app->authManager;
+            //$authManager->revokeAll($this->id);
+            if(is_array($this->roles)){
+                foreach ($this->roles as $roleName){
+                    $role = $authManager->getRole($roleName);
+                    if($role) $authManager->assign($role,$this->id);
+                }
+            }*/
             \Yii::$app->session->setFlash('success','用户添加成功');
             return $this->redirect(['index']);
         }
@@ -33,11 +42,20 @@ class UserController extends \yii\web\Controller
         if($model==null){
             throw new NotFoundHttpException('用户不存在');
         }
+
+        $model->roles = ArrayHelper::map(\Yii::$app->authManager->getRolesByUser($id),'name','description');
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             //var_dump($model);exit;
 
             $model->save();
-
+            /*$authManager = Yii::$app->authManager;
+            $authManager->revokeAll($this->id);
+            if(is_array($this->roles)){
+                foreach ($this->roles as $roleName){
+                    $role = $authManager->getRole($roleName);
+                    if($role) $authManager->assign($role,$this->id);
+                }
+            }*/
             \Yii::$app->session->setFlash('success','用户修改成功');
             return $this->redirect(['index']);
         }

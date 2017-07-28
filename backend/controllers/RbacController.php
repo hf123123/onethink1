@@ -22,8 +22,8 @@ class RbacController extends \yii\web\Controller
             //保存到数据表
             $authManager->add($permission);
 
-            \Yii::$app->session->setFlash('success','权限添加成功');
-            return $this->redirect(['permission-index']);
+            \Yii::$app->session->setFlash('success','权限【'.$model->name.'】添加成功');
+            return $this->redirect(['add-permission']);
         }
         return $this->render('add-permission',['model'=>$model]);
     }
@@ -95,32 +95,43 @@ class RbacController extends \yii\web\Controller
 
         return $this->render('add-role',['model'=>$model]);
     }
-
-
-    public function actionRoleIndex()
-    {
-        return $this->render('role-index');
-    }
-
     //修改角色
-    public function actionEditRole($name){
-        $model = new RoleForm();
-        //取消角色和权限的关联
+    public function actionEditRole($name)
+    {
         $authManager = \Yii::$app->authManager;
         $role = $authManager->getRole($name);
-        //全部取消关联
-        //$authManager->removeChildren($role);
-        //再依次关联
-
-
+        $model = new RoleForm();
         //表单权限多选回显
         //获取角色的权限
         $permissions = $authManager->getPermissionsByRole($name);
         $model->name = $role->name;
         $model->description = $role->description;
         $model->permissions = ArrayHelper::map($permissions,'name','name');
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            $role->description = $model->description;
+            $role->name = $model->name;
+            $authManager->update($name,$role);
+            //给角色赋予权限
+            $authManager->removeChildren($role);
+            if(is_array($model->permissions)){
+                foreach ($model->permissions as $permissionName){
+                    $permission = $authManager->getPermission($permissionName);
+                    if($permission) $authManager->addChild($role,$permission);
+                }
+            }
+            \Yii::$app->session->setFlash('success','角色修改成功');
+            return $this->redirect(['role-index']);
+
+        }
 
         return $this->render('add-role',['model'=>$model]);
     }
+    public function actionRoleIndex()
+    {
+        $models = \Yii::$app->authManager->getRoles();
+        return $this->render('role-index',['models'=>$models]);
+    }
+
+
 
 }
