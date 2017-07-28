@@ -81,7 +81,7 @@ class ArticleController extends \yii\web\Controller
             $article_detail->save();
 
             \Yii::$app->session->setFlash('success','文章修改成功');
-            return $this->refresh(['index']);
+            return $this->redirect(['index']);
         }
 
         return $this->render('add',['article'=>$article,'article_detail'=>$article_detail]);
