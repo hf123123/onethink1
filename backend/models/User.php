@@ -35,6 +35,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     const SCENARIO_ADD = 'add';
     const SCENARIO_LOGIN = 'login';
     const SCENARIO_EDIT = 'edit';
+
     //定义场景
     /*public function scenarios()
     {
@@ -152,14 +153,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
-        $authManager = Yii::$app->authManager;
-        $authManager->revokeAll($this->id);
-        if(is_array($this->roles)){
-            foreach ($this->roles as $roleName){
-                $role = $authManager->getRole($roleName);
-                if($role) $authManager->assign($role,$this->id);
+        if(in_array($this->scenario,[self::SCENARIO_ADD,self::SCENARIO_EDIT])){
+            $authManager = Yii::$app->authManager;
+            $authManager->revokeAll($this->id);
+            if(is_array($this->roles)){
+                foreach ($this->roles as $roleName){
+                    $role = $authManager->getRole($roleName);
+                    if($role) $authManager->assign($role,$this->id);
+                }
             }
         }
+
     }
 
 
