@@ -19,6 +19,24 @@ class MenuController extends \yii\web\Controller
         return $this->render('add',['model'=>$model]);
     }
     //修改菜单
+    public function actionEdit($id)
+    {
+        $model = Menu::findOne(['id'=>$id]);
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //预防出现三层菜单
+            if($model->parent_id && !empty($model->children)){
+                $model->addError('parent_id','只能为顶级菜单');
+            }else{
+                $model->save();
+                return $this->redirect(['index']);
+            }
+
+            //\Yii::$app->session->setFlash('success','菜单添加成功');
+
+        }
+        return $this->render('add',['model'=>$model]);
+    }
+
 
     //删除菜单
 

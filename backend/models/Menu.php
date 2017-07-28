@@ -53,7 +53,8 @@ class Menu extends \yii\db\ActiveRecord
     //获取一级菜单选项
     public static function getMenuOptions()
     {
-        return ArrayHelper::merge([0=>'顶级菜单'],ArrayHelper::map(self::find()->where(['parent_id'=>0])->asArray()->all(),'id','label'));
+        //  [0=>'顶级菜单'] ， [1=>'文章管理',2=>'添加文章']  ===》[0=>'顶级菜单',1=>'文章管理',2=>'添加文章']
+        return ArrayHelper::merge([''=>'=请选择上级菜单=',0=>'顶级菜单'],ArrayHelper::map(self::find()->where(['parent_id'=>0])->asArray()->all(),'id','label'));
     }
     //获取地址选项
     public static function getUrlOptions()
@@ -61,7 +62,7 @@ class Menu extends \yii\db\ActiveRecord
         return  ArrayHelper::map(Yii::$app->authManager->getPermissions(),'name','name');
     }
 
-    //获取子菜单
+    //获取子菜单  Menu[]
     public function getChildren()
     {
         return $this->hasMany(self::className(),['parent_id'=>'id']);

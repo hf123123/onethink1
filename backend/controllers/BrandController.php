@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Brand;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
@@ -141,4 +142,12 @@ class BrandController extends \yii\web\Controller
         var_dump($url);
     }
 
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
+    }
 }

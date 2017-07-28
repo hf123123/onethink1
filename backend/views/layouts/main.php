@@ -35,7 +35,7 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-   /* $menuItems=[
+   /*$menuItems=[
             ['label' => '登录', 'url' => ['user/login']],//可跳转的一级菜单
             ['label' => '用户管理', 'items' => [
                 ['label' => '添加用户', 'url' => ['user/add']],//添加用户
@@ -46,11 +46,28 @@ AppAsset::register($this);
                 ['label' => '文章列表', 'url' => ['user/index']],//用户列表
             ]],//不可跳转，带下来列表的一级菜单
     ];*/
+    $menuItems = [];
+    $menus=\backend\models\Menu::findAll(['parent_id'=>0]);
+    foreach ($menus as $menu){
+        //一级菜单
+        $items = [];
+        foreach ($menu->children as $child){
+            //判断当前用户是否有该路由（菜单）的权限
+            if(Yii::$app->user->can($child->url)){
+                $items[] = ['label' => $child->label, 'url' => [$child->url]];
+            }
+        }
+        //没有子菜单时，不显示一级菜单
+        if(!empty($items)){
+            $menuItems[] = ['label' => $menu->label, 'items' => $items];
+        }
+
+    }
     if (Yii::$app->user->isGuest) {
         $menuItems = [];
         $menuItems[] = ['label' => '登录', 'url' => ['user/login']];
     } else {
-        $menuItems = Yii::$app->user->identity->getMenus();
+        //$menuItems = Yii::$app->user->identity->getMenus();
         $menuItems[] = '<li>'
             . Html::beginForm(['user/logout'], 'post')
             . Html::submitButton(
