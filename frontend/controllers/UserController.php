@@ -46,6 +46,9 @@ class UserController extends \yii\web\Controller
     //登录
     public function actionLogin()
     {
+        if (\Yii::$app->request->isPost){
+            return $this->redirect(['user/address']);
+        }
         return $this->render('login');
     }
     //用户地址
